@@ -8,8 +8,14 @@ __maintainer__ = "Ben Fisher"
 
 import numpy as np
 import pandas as pd
-from math import sqrt
+from math import sqrt, radians, degrees
 
+
+def closePolygon(coords):
+    coords = np.array(coords)
+    if not (coords[0][0] == coords[-1][0]) & (coords[0][1] == coords[-1][1]):
+        coords = np.vstack((coords, coords[0]))
+    return coords
 
 def extrema(coords):
     """returns the extrema of a collection of coordinate pairs.
@@ -78,25 +84,61 @@ def inertias(coords, x_offset = 0, y_offset = 0):
         term_1 = (x[i]*y[i+1]-x[i+1]*y[i])
         Ix  += term_1*(y[i]**2+y[i]*y[i+1]+y[i+1]**2)
         Iy  += term_1*(x[i]**2+x[i]*x[i+1]+x[i+1]**2)
-        # Ixy += term_1*((x[i]*y[i+1])+(2*x[i]*y[i])+(2*x[i+1]*y[i+1])+(x[i+1]*y[i]))
+        Ixy += term_1*((x[i]*y[i+1])+(2*x[i]*y[i])+(2*x[i+1]*y[i+1])+(x[i+1]*y[i]))
     Ix /= 12
     Iy /= 12
+    Ixy /= 24
     # The next block performs parallel axis calculation in either x_offset or y_offset are non-zero
     if (x_offset != 0) | (y_offset != 0):
         A = area(coords)
         Ix += A*y_offset**2
         Iy += A*x_offset**2
-    Ixy = Ix + Iy   #Ix /= 24  
-    return np.array([Ix,Iy,Ixy])
+        Ixy += A*x_offset*y_offset
+    Iz = Ix + Iy   # Polar moment of inertia using perpendicular axis theorem
+    return np.array([Ix,Iy,Iz,Ixy])
 
-def Ix(xy):
-    return inertias(xy)[0]
+def Ix(coords):
+    return inertias(coords)[0]
 
-def Iy(xy):
-    return inertias(xy)[1]
+def Iy(coords):
+    return inertias(coords)[1]
 
-def Ixy(xy):
-    return inertias(xy)[2]
+def J(coords):
+    return inertias(coords)[2]
+
+def Iz(coords):
+    return inertias(coords)[2]
+
+def Ixy(coords):
+    return inertias(coords)[3]
+
+def inertias_inclined(coords, angle_degrees = 0):
+    inerts = inertias(coords)
+    rads = radians(angle_degrees)
+    ix = inerts[0]
+    iy = inerts[1]
+    ixy = inerts[3]
+    ix_new = (ix+iy)/2+(ix-iy)/2*cos(2*rads)-ixy*sin(2*rads)
+    iy_new = (ix+iy)/2-(ix-iy)/2*cos(2*rads)+ixy*sin(2*rads)
+    ixy_new = (ix-iy)/2*sin(2*rads)+ixy*cos(2*rads)
+    return [ix_new,iy_new,ix_new+iy_new,ixy_new]
+
+def sectionModulii(coords):
+    coords = np.array(coords)
+    extremes = extrema(coords)
+    cgs = centroids(coords)
+    inerts = inertias(coords)
+    S_bot = inerts[0]/(extremes[1][0] - cgs[1])
+    S_top = inerts[0]/(extremes[1][1] - cgs[1])
+    S_left = inerts[1]/(extremes[0][0] - cgs[0])
+    S_right = inerts[1]/(extremes[0][1] - cgs[0])
+    return [S_bot, S_top, S_left, S_right]
+
+def Sx(coords):
+    sectionModulii(coords)[1:2]
+
+def Sy(coords):
+    sectionModulii(coords)[3:4]
 
 def radii(xy):
     inerts = inertias(xy)
