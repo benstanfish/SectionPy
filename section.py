@@ -34,7 +34,7 @@ def extrema(coords):
     return np.array([[np.min(x),np.max(x)],[np.min(y),np.max(y)]])
 
 def perimeter(coords):
-    coords = np.array(coords)
+    coords = closePolygon(coords)
     n = coords.shape[0]
     x = coords[:,0]
     y = coords[:,1]
@@ -44,7 +44,7 @@ def perimeter(coords):
     return P
 
 def area(coords):
-    coords = np.array(coords)
+    coords = closePolygon(coords)
     n = coords.shape[0]
     x = coords[:,0]
     y = coords[:,1]
@@ -55,7 +55,7 @@ def area(coords):
     return A
 
 def centroids(coords):
-    coords = np.array(coords)
+    coords = closePolygon(coords)
     n = coords.shape[0]
     x = coords[:,0]
     y = coords[:,1]
@@ -75,7 +75,7 @@ def Cy(coords):
     return centroids(coords)[1]
 
 def inertias(coords, x_offset = 0, y_offset = 0):
-    coords = np.array(coords)
+    coords = closePolygon(coords)
     n = coords.shape[0]
     x = coords[:,0]
     y = coords[:,1]
@@ -124,7 +124,6 @@ def inertias_inclined(coords, angle_degrees = 0):
     return [ix_new,iy_new,ix_new+iy_new,ixy_new]
 
 def sectionModulii(coords):
-    coords = np.array(coords)
     extremes = extrema(coords)
     cgs = centroids(coords)
     inerts = inertias(coords)
