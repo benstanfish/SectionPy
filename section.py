@@ -74,6 +74,7 @@ def Cx(coords):
 def Cy(coords):
     return centroids(coords)[1]
 
+#TODO: This formula does not appear to be working correctly. Need to verify by other means.
 def inertias(coords, x_offset = 0, y_offset = 0):
     coords = closePolygon(coords)
     n = coords.shape[0]
@@ -81,10 +82,9 @@ def inertias(coords, x_offset = 0, y_offset = 0):
     y = coords[:,1]
     Ix = Iy = Ixy = 0
     for i in range(0,n-1):
-        term_1 = (x[i]*y[i+1]-x[i+1]*y[i])
-        Ix  += term_1*(y[i]**2+y[i]*y[i+1]+y[i+1]**2)
-        Iy  += term_1*(x[i]**2+x[i]*x[i+1]+x[i+1]**2)
-        Ixy += term_1*((x[i]*y[i+1])+(2*x[i]*y[i])+(2*x[i+1]*y[i+1])+(x[i+1]*y[i]))
+        Ix  += (x[i]*y[i+1]-x[i+1]*y[i])*(y[i]**2+y[i]*y[i+1]+y[i+1]**2)
+        Iy  += (x[i]*y[i+1]-x[i+1]*y[i])*(x[i]**2+x[i]*x[i+1]+x[i+1]**2)
+        Ixy += (x[i]*y[i+1]-x[i+1]*y[i])*((x[i]*y[i+1])+(2*x[i]*y[i])+(2*x[i+1]*y[i+1])+(x[i+1]*y[i]))
     Ix /= 12
     Iy /= 12
     Ixy /= 24
