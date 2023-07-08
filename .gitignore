@@ -5,5 +5,6 @@ dev/
 
 *.ipynb
 !Module Test Template.ipynb
+!Geometry.ipynb
 
 test*
