@@ -1,6 +1,6 @@
 import os, sys, pathlib
 import numpy as np
-import pandas as pd
+#import pandas as pd
 import matplotlib.pyplot as plt
 from math import *
 import collections.abc
@@ -22,7 +22,7 @@ def plot_polygon(arr, unit = 1):
 
 def circle_points(radius, point_count = 30, max_angle = 2 * pi, is_segment: bool = False):
     xys = np.zeros([point_count,2])
-    for i in range(0,n):
+    for i in range(0,point_count):
         xys[i,0]= radius * cos(min(2*pi, max_angle)/(max(point_count,2)-1)*i)
         xys[i,1]= radius * sin(min(2*pi, max_angle)/(max(point_count,2)-1)*i)
     if is_segment == True:
