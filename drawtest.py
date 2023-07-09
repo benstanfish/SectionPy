@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QApplication, QWidget
 import sys
 from PyQt6.QtGui import QIcon, QPainter, QPen, QBrush, QColor, QColorConstants, QPolygon
 from PyQt6.QtCore import Qt, QRect, QPoint
+
 import geometry
 
 class Window(QWidget):

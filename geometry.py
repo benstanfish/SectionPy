@@ -1,9 +1,15 @@
 import os, sys, pathlib
 import numpy as np
-#import pandas as pd
+import pandas as pd
 import matplotlib.pyplot as plt
 from math import *
 import collections.abc
+from PyQt6.QtCore import QPointF
+from PyQt6.QtGui import QPolygonF
+
+# sys.path.extend([pathlib.Path().resolve()])
+
+
 
 def close_polygon(arr):
     return np.append(arr,[arr[0]],axis=0)
@@ -88,6 +94,10 @@ def T_points(depth, stem_thick, flange_width, flange_thick):
                      [(flange_width-stem_thick)/2,depth-flange_thick],
                     ])
     
+
+def getQPolygon(xys):
+    polygon = QPolygonF([QPolygonF(*(xys) for point in np.array(xys))])
+
 
 # Transforms
 
