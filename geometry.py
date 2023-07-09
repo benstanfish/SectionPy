@@ -4,8 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from math import *
 import collections.abc
-from PyQt6.QtCore import QPointF
-from PyQt6.QtGui import QPolygonF
+from PyQt6.QtCore import QPoint
+from PyQt6.QtGui import QPolygon
 
 # sys.path.extend([pathlib.Path().resolve()])
 
@@ -26,7 +26,7 @@ def plot_polygon(arr, unit = 1):
     plt.plot(arr[:,0],arr[:,1],color="dodgerblue",linewidth=3)
     
 
-def circle_points(radius, point_count = 30, max_angle = 2 * pi, is_segment: bool = False):
+def circle_points(radius, point_count = 30, max_angle = 2 * pi, is_segment: bool = True):
     xys = np.zeros([point_count,2])
     for i in range(0,point_count):
         xys[i,0]= radius * cos(min(2*pi, max_angle)/(max(point_count,2)-1)*i)
@@ -36,7 +36,7 @@ def circle_points(radius, point_count = 30, max_angle = 2 * pi, is_segment: bool
             xys = np.append(xys,[[0,0]],axis=0)
     return xys
 
-def ellipse_points(short_radius, long_radius, point_count = 30, max_angle = 2 * pi, is_segment: bool = False):
+def ellipse_points(short_radius, long_radius, point_count = 30, max_angle = 2 * pi, is_segment: bool = True):
     xys = np.zeros([point_count,2])
     for i in range(0,n):
         xys[i,0]= short_radius * cos(min(2*pi, max_angle)/(max(point_count,2)-1)*i)
@@ -96,13 +96,15 @@ def T_points(depth, stem_thick, flange_width, flange_thick):
     
 
 def getQPolygon(xys):
-    polygon = QPolygonF([QPolygonF(*(xys) for point in np.array(xys))])
-
+    poly = QPolygon()
+    for i in range(0,xys.shape[0]):
+        poly.append(QPoint(xys[i][0],xys[i][1]))
+    return poly
 
 # Transforms
 
 def rotate(arr, rads):
-    transform = np.array([[cos(rads),-sin(rads)],[sin(rads),cos(rads)]]).transpose()
+    transform = np.array([[cos(rads),-sin(rads)],[sin(rads),cos(rads)]])
     return np.matmul(arr,transform)
 
 def reflection(arr, rads):
