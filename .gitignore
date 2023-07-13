@@ -2,7 +2,7 @@ __pycache__
 
 dev/
 /.ipynb_checkpoints
-
+*.png
 *.ipynb
 !Module Test Template.ipynb
 !Geometry.ipynb
